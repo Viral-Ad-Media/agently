@@ -160,7 +160,12 @@ const CallSimulator: React.FC<CallSimulatorProps> = ({ agent, onClose, onCallFin
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
               </div>
               <h4 className="text-3xl font-black text-slate-900 mb-3 tracking-tight">Stress Test Agent</h4>
-              <p className="text-slate-500 mb-10 max-w-xs mx-auto font-medium text-lg leading-relaxed">Simulate an inbound customer call to verify logic, intent detection, and tone.</p>
+              <p className="text-slate-500 mb-3 max-w-xs mx-auto font-medium text-lg leading-relaxed">
+                Simulate an {agent.direction} voice workflow to verify logic, intent detection, and tone.
+              </p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-10">
+                Twilio line: {agent.twilioPhoneNumber || 'Not assigned'}
+              </p>
               <div className="mx-auto mb-8 grid max-w-md gap-4 text-left">
                 <input value={callerName} onChange={event => setCallerName(event.target.value)} placeholder="Caller name" className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-medium outline-none focus:ring-2 focus:ring-indigo-500" />
                 <input value={callerPhone} onChange={event => setCallerPhone(event.target.value)} placeholder="Caller phone" className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-medium outline-none focus:ring-2 focus:ring-indigo-500" />
@@ -171,7 +176,7 @@ const CallSimulator: React.FC<CallSimulatorProps> = ({ agent, onClose, onCallFin
                 className="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-5 rounded-3xl font-black uppercase tracking-widest text-xs shadow-2xl shadow-indigo-200 transition-all active:scale-95 flex items-center gap-4 mx-auto"
               >
                 <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
-                Initiate Inbound Call
+                {agent.direction === 'outbound' ? 'Launch Outbound Call' : 'Initiate Inbound Call'}
               </button>
             </div>
           )}
@@ -181,8 +186,10 @@ const CallSimulator: React.FC<CallSimulatorProps> = ({ agent, onClose, onCallFin
               <div className="w-24 h-24 bg-slate-900 text-white rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-slate-200">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v8"/><path d="m16 6-4 4-4-4"/><rect width="20" height="8" x="2" y="14" rx="2"/></svg>
               </div>
-              <p className="text-2xl font-black text-slate-900 tracking-tight">Ringing Phone Line...</p>
-              <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2">Connecting to the live agent workflow</p>
+              <p className="text-2xl font-black text-slate-900 tracking-tight">{agent.direction === 'outbound' ? 'Dialing Contact...' : 'Ringing Phone Line...'}</p>
+              <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2">
+                {agent.direction === 'outbound' ? 'Launching from the Twilio outbound line' : 'Connecting to the live inbound workflow'}
+              </p>
             </div>
           )}
 

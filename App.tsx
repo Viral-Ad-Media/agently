@@ -342,8 +342,8 @@ const App: React.FC = () => {
     await refreshWorkspace();
   };
 
-  const handleCreateVoiceAgent = async () => {
-    await api.createVoiceAgent();
+  const handleCreateVoiceAgent = async (payload?: Partial<AgentConfig>) => {
+    await api.createVoiceAgent(payload);
     await refreshWorkspace();
   };
 
@@ -486,7 +486,16 @@ const App: React.FC = () => {
     await api.downloadCallReport(callId);
   };
 
-  const handleSaveSettings = async (settings: { timezone: string; phoneNumber: string }) => {
+  const handleSaveSettings = async (settings: {
+    timezone: string;
+    phoneNumber: string;
+    twilio?: {
+      accountSid?: string;
+      authToken?: string;
+      validateRequests?: boolean;
+      clearCredentials?: boolean;
+    };
+  }) => {
     await api.updateSettings(settings);
     await refreshWorkspace();
   };

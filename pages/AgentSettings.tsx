@@ -9,7 +9,7 @@ const LANGUAGES = ['English', 'Spanish', 'French', 'German'] as const;
 interface AgentSettingsProps {
   org: Organization;
   onUpdateAgent: (updates: Partial<AgentConfig>) => Promise<void>;
-  onCreateVoiceAgent: () => Promise<void>;
+  onCreateVoiceAgent: (payload?: Partial<AgentConfig>) => Promise<void>;
   onActivateVoiceAgent: (id: string) => Promise<void>;
   onDeleteVoiceAgent: (id: string) => Promise<void>;
   onUpdateRules: (ruleUpdates: Partial<AgentConfig['rules']>) => Promise<void>;
@@ -90,12 +90,20 @@ const AgentSettings: React.FC<AgentSettingsProps> = ({
               <h3 className="text-xl font-bold text-slate-900">Voice Agent Fleet</h3>
               <p className="text-sm text-slate-500">Create multiple voice agents and switch which one is active across calls, onboarding, and the simulator.</p>
             </div>
-            <button
-              onClick={() => void runAction('create-voice-agent', onCreateVoiceAgent)}
-              className="rounded-2xl bg-indigo-600 px-5 py-3 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700"
-            >
-              + New Voice Agent
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => void runAction('create-inbound-voice-agent', () => onCreateVoiceAgent({ direction: 'inbound' }))}
+                className="rounded-2xl bg-indigo-600 px-5 py-3 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700"
+              >
+                + New Inbound
+              </button>
+              <button
+                onClick={() => void runAction('create-outbound-voice-agent', () => onCreateVoiceAgent({ direction: 'outbound' }))}
+                className="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-xs font-black uppercase tracking-widest text-slate-700 transition-all hover:border-indigo-200 hover:text-indigo-600"
+              >
+                + New Outbound
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -109,7 +117,8 @@ const AgentSettings: React.FC<AgentSettingsProps> = ({
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-sm font-black text-slate-900">{agent.name}</p>
-                      <p className="mt-1 text-[11px] font-black uppercase tracking-widest text-slate-400">{agent.voice} • {agent.language}</p>
+                      <p className="mt-1 text-[11px] font-black uppercase tracking-widest text-slate-400">{agent.direction} • {agent.voice} • {agent.language}</p>
+                      <p className="mt-2 text-xs font-semibold text-indigo-600">{agent.twilioPhoneNumber || 'No Twilio number assigned yet'}</p>
                       <p className="mt-3 text-xs text-slate-500 line-clamp-2">{agent.greeting}</p>
                     </div>
                     {isActive && (
@@ -164,6 +173,21 @@ const AgentSettings: React.FC<AgentSettingsProps> = ({
                 />
               </div>
               <div>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Call Direction</label>
+                <select
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none font-medium"
+                  value={draftAgent.direction}
+                  onChange={e => {
+                    const direction = e.target.value as AgentConfig['direction'];
+                    setDraftAgent(prev => ({ ...prev, direction }));
+                    void saveAgent({ direction }, 'direction');
+                  }}
+                >
+                  <option value="inbound">Inbound</option>
+                  <option value="outbound">Outbound</option>
+                </select>
+              </div>
+              <div>
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Voice Profile</label>
                 <select 
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none font-medium"
@@ -176,6 +200,38 @@ const AgentSettings: React.FC<AgentSettingsProps> = ({
                 >
                   {VOICES.map(v => <option key={v} value={v}>{v}</option>)}
                 </select>
+              </div>
+              <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Twilio Phone Number</label>
+                  <input
+                    type="tel"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none font-medium"
+                    placeholder="+1 (555) 000-0000"
+                    value={draftAgent.twilioPhoneNumber}
+                    onChange={e => setDraftAgent(prev => ({ ...prev, twilioPhoneNumber: e.target.value }))}
+                    onBlur={() => {
+                      if (draftAgent.twilioPhoneNumber !== org.agent.twilioPhoneNumber) {
+                        void saveAgent({ twilioPhoneNumber: draftAgent.twilioPhoneNumber }, 'twilioPhoneNumber');
+                      }
+                    }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Twilio Phone SID</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none font-medium"
+                    placeholder="PNxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                    value={draftAgent.twilioPhoneSid}
+                    onChange={e => setDraftAgent(prev => ({ ...prev, twilioPhoneSid: e.target.value }))}
+                    onBlur={() => {
+                      if (draftAgent.twilioPhoneSid !== org.agent.twilioPhoneSid) {
+                        void saveAgent({ twilioPhoneSid: draftAgent.twilioPhoneSid }, 'twilioPhoneSid');
+                      }
+                    }}
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Primary Language</label>
@@ -269,31 +325,6 @@ const AgentSettings: React.FC<AgentSettingsProps> = ({
           </button>
         </div>
 
-        {/* Capabilities Section */}
-        <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-          <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-            Advanced Capabilities
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { title: '24/7 Availability', desc: 'Always on, always available to handle calls and chats.', icon: '🕒' },
-              { title: 'Automated Basics', desc: 'Handles FAQs and routine inquiries automatically.', icon: '🤖' },
-              { title: 'Seamless Handoffs', desc: 'Smooth transitions to your human team when needed.', icon: '🤝' },
-              { title: 'No-Code Setup', desc: 'Fast deployment with zero technical knowledge required.', icon: '⚡' },
-              { title: 'Brand-Consistent Voice', desc: 'A voice and tone that perfectly fits your brand identity.', icon: '🎙️' },
-              { title: 'Multi-language Support', desc: 'Communicate with customers in their preferred language.', icon: '🌍' },
-            ].map((cap, i) => (
-              <div key={i} className="flex gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-100 hover:bg-white transition-all">
-                <div className="text-2xl">{cap.icon}</div>
-                <div>
-                  <h4 className="text-sm font-black text-slate-900 mb-1">{cap.title}</h4>
-                  <p className="text-xs text-slate-500 leading-relaxed">{cap.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Right Column: Behavior & Routing */}
@@ -369,7 +400,9 @@ const AgentSettings: React.FC<AgentSettingsProps> = ({
             <h4 className="text-xl font-black mb-3">Live Status</h4>
             <div className="flex items-center gap-2 mb-6">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              <p className="text-indigo-200 text-xs font-black uppercase tracking-widest">Active on {org.phoneNumber}</p>
+              <p className="text-indigo-200 text-xs font-black uppercase tracking-widest">
+                {org.agent.direction === 'outbound' ? 'Outbound from' : 'Inbound on'} {org.agent.twilioPhoneNumber || org.phoneNumber}
+              </p>
             </div>
             <button
               onClick={() => void runAction('restart', onRestartAgent)}

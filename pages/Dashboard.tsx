@@ -92,7 +92,9 @@ const Dashboard: React.FC<{ org: Organization; dashboard: DashboardData }> = ({ 
               </div>
               <div>
                 <p className="text-sm font-black text-slate-900 uppercase tracking-tighter">AI Shield Live</p>
-                <p className="text-xs text-slate-500 font-medium italic">Agent {org.agent.name} is handling calls.</p>
+                <p className="text-xs text-slate-500 font-medium italic">
+                  {dashboard.agentStatus.direction === 'outbound' ? 'Outbound' : 'Inbound'} agent {org.agent.name} is live on {dashboard.agentStatus.phoneNumber}.
+                </p>
               </div>
             </div>
           </div>

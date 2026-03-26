@@ -74,6 +74,9 @@ export interface ChatMessage {
 export interface AgentConfig {
   id: string;
   name: string;
+  direction: 'inbound' | 'outbound';
+  twilioPhoneNumber: string;
+  twilioPhoneSid: string;
   voice: 'Zephyr' | 'Puck' | 'Charon' | 'Kore' | 'Fenrir';
   language: 'English' | 'Spanish' | 'French' | 'German';
   greeting: string;
@@ -94,6 +97,7 @@ export interface ChatbotConfig {
   id: string;
   name: string;
   voiceAgentId: string;
+  faqs: FAQ[];
   headerTitle: string;
   welcomeMessage: string;
   placeholder: string;
@@ -116,6 +120,20 @@ export interface BusinessProfile {
   timezone: string;
 }
 
+export interface TwilioSettings {
+  accountSid: string;
+  authTokenConfigured: boolean;
+  authTokenLastFour: string;
+  validateRequests: boolean;
+  webhookBaseUrl: string;
+}
+
+export interface WorkspaceSettings {
+  timezone: string;
+  phoneNumber: string;
+  twilio: TwilioSettings;
+}
+
 export interface Organization {
   id: string;
   profile: BusinessProfile;
@@ -126,6 +144,7 @@ export interface Organization {
   chatbots: ChatbotConfig[];
   subscription: Subscription;
   phoneNumber: string;
+  settings: WorkspaceSettings;
   members: User[];
   invoices: Invoice[];
 }
@@ -154,6 +173,7 @@ export interface DashboardData {
     online: boolean;
     agentName: string;
     phoneNumber: string;
+    direction: 'inbound' | 'outbound';
   };
 }
 

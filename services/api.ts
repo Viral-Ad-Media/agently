@@ -9,6 +9,7 @@ import {
   Organization,
   User,
   UserRole,
+  WorkspaceSettings,
   WorkspaceBootstrap,
 } from '../types';
 import { getSessionToken } from './session';
@@ -370,8 +371,17 @@ export const api = {
     triggerDownload(blob, `${callId}-report.txt`);
   },
 
-  async updateSettings(settings: { timezone?: string; phoneNumber?: string }) {
-    return request<{ timezone: string; phoneNumber: string }>('/api/settings', {
+  async updateSettings(settings: {
+    timezone?: string;
+    phoneNumber?: string;
+    twilio?: {
+      accountSid?: string;
+      authToken?: string;
+      validateRequests?: boolean;
+      clearCredentials?: boolean;
+    };
+  }) {
+    return request<WorkspaceSettings>('/api/settings', {
       method: 'PATCH',
       body: settings,
     });

@@ -36,6 +36,9 @@ const Onboarding: React.FC<OnboardingProps> = ({ onGenerateFaqs, onComplete }) =
   const [agent, setAgent] = useState<AgentConfig>({
     id: 'voice_agent_onboarding',
     name: 'Maya',
+    direction: 'inbound',
+    twilioPhoneNumber: '',
+    twilioPhoneSid: '',
     voice: 'Zephyr',
     language: 'English',
     greeting: '',

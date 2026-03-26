@@ -66,6 +66,7 @@ const Messenger: React.FC<MessengerProps> = ({
       await onUpdateChatbot(activeChatbot.id, {
         name: draftChatbot.name,
         voiceAgentId: draftChatbot.voiceAgentId,
+        faqs: draftChatbot.faqs,
         headerTitle: draftChatbot.headerTitle,
         welcomeMessage: draftChatbot.welcomeMessage,
         placeholder: draftChatbot.placeholder,
@@ -116,6 +117,34 @@ const Messenger: React.FC<MessengerProps> = ({
     } finally {
       setIsTyping(false);
     }
+  };
+
+  const updateFaq = (faqId: string, field: 'question' | 'answer', value: string) => {
+    setDraftChatbot((current) => ({
+      ...current,
+      faqs: current.faqs.map((faq) => (faq.id === faqId ? { ...faq, [field]: value } : faq)),
+    }));
+  };
+
+  const addFaq = () => {
+    setDraftChatbot((current) => ({
+      ...current,
+      faqs: [
+        ...current.faqs,
+        {
+          id: `chatbot_faq_${Date.now()}`,
+          question: 'New chatbot knowledge topic',
+          answer: 'Add the detailed response this chatbot should use.',
+        },
+      ],
+    }));
+  };
+
+  const removeFaq = (faqId: string) => {
+    setDraftChatbot((current) => ({
+      ...current,
+      faqs: current.faqs.filter((faq) => faq.id !== faqId),
+    }));
   };
 
   return (
@@ -295,6 +324,53 @@ const Messenger: React.FC<MessengerProps> = ({
                   className="w-full rounded-2xl border border-slate-200 px-4 py-3 font-medium outline-none resize-none focus:ring-2 focus:ring-indigo-500"
                 />
                 <p className="mt-2 text-xs text-slate-400">This shapes the chatbot's fallback personality when no FAQ is a direct match.</p>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between gap-4 mb-3">
+                  <div>
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest">Training & Knowledge</label>
+                    <p className="mt-1 text-xs text-slate-400">These entries belong to this chatbot only and are checked before the linked voice agent knowledge base.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addFaq}
+                    className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-slate-600 transition-all hover:border-indigo-200 hover:text-indigo-600"
+                  >
+                    + Add Entry
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {draftChatbot.faqs.map((faq) => (
+                    <div key={faq.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Knowledge Entry</p>
+                        <button
+                          type="button"
+                          onClick={() => removeFaq(faq.id)}
+                          className="text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:text-red-600"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={faq.question}
+                        onChange={(event) => updateFaq(faq.id, 'question', event.target.value)}
+                        className="mb-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-medium outline-none focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Question or topic"
+                      />
+                      <textarea
+                        rows={3}
+                        value={faq.answer}
+                        onChange={(event) => updateFaq(faq.id, 'answer', event.target.value)}
+                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-medium outline-none resize-none focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Detailed answer"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <button
