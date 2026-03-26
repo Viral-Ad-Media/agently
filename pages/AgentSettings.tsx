@@ -9,6 +9,9 @@ const LANGUAGES = ['English', 'Spanish', 'French', 'German'] as const;
 interface AgentSettingsProps {
   org: Organization;
   onUpdateAgent: (updates: Partial<AgentConfig>) => Promise<void>;
+  onCreateVoiceAgent: () => Promise<void>;
+  onActivateVoiceAgent: (id: string) => Promise<void>;
+  onDeleteVoiceAgent: (id: string) => Promise<void>;
   onUpdateRules: (ruleUpdates: Partial<AgentConfig['rules']>) => Promise<void>;
   onAddFaq: () => Promise<void>;
   onRemoveFaq: (id: string) => Promise<void>;
@@ -19,6 +22,9 @@ interface AgentSettingsProps {
 const AgentSettings: React.FC<AgentSettingsProps> = ({
   org,
   onUpdateAgent,
+  onCreateVoiceAgent,
+  onActivateVoiceAgent,
+  onDeleteVoiceAgent,
   onUpdateRules,
   onAddFaq,
   onRemoveFaq,
@@ -78,6 +84,64 @@ const AgentSettings: React.FC<AgentSettingsProps> = ({
       
       {/* Left Column: Core Identity */}
       <div className="lg:col-span-2 space-y-8">
+        <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            <div>
+              <h3 className="text-xl font-bold text-slate-900">Voice Agent Fleet</h3>
+              <p className="text-sm text-slate-500">Create multiple voice agents and switch which one is active across calls, onboarding, and the simulator.</p>
+            </div>
+            <button
+              onClick={() => void runAction('create-voice-agent', onCreateVoiceAgent)}
+              className="rounded-2xl bg-indigo-600 px-5 py-3 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700"
+            >
+              + New Voice Agent
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {org.voiceAgents.map((agent) => {
+              const isActive = agent.id === org.activeVoiceAgentId;
+              return (
+                <div
+                  key={agent.id}
+                  className={`rounded-3xl border p-5 transition-all ${isActive ? 'border-indigo-200 bg-indigo-50/70 shadow-sm' : 'border-slate-200 bg-slate-50'}`}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-black text-slate-900">{agent.name}</p>
+                      <p className="mt-1 text-[11px] font-black uppercase tracking-widest text-slate-400">{agent.voice} • {agent.language}</p>
+                      <p className="mt-3 text-xs text-slate-500 line-clamp-2">{agent.greeting}</p>
+                    </div>
+                    {isActive && (
+                      <span className="rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-widest text-indigo-600 border border-indigo-100">
+                        Active
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-5 flex items-center gap-2">
+                    {!isActive && (
+                      <button
+                        onClick={() => void runAction(`activate-${agent.id}`, () => onActivateVoiceAgent(agent.id))}
+                        className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[10px] font-black uppercase tracking-widest text-slate-600 transition-all hover:border-indigo-200 hover:text-indigo-600"
+                      >
+                        Make Active
+                      </button>
+                    )}
+                    <button
+                      onClick={() => void runAction(`delete-${agent.id}`, () => onDeleteVoiceAgent(agent.id))}
+                      disabled={org.voiceAgents.length <= 1}
+                      className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[10px] font-black uppercase tracking-widest text-slate-500 transition-all hover:border-red-200 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
           <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

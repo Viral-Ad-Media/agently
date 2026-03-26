@@ -34,6 +34,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onGenerateFaqs, onComplete }) =
   });
 
   const [agent, setAgent] = useState<AgentConfig>({
+    id: 'voice_agent_onboarding',
     name: 'Maya',
     voice: 'Zephyr',
     language: 'English',

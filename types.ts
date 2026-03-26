@@ -72,6 +72,7 @@ export interface ChatMessage {
 }
 
 export interface AgentConfig {
+  id: string;
   name: string;
   voice: 'Zephyr' | 'Puck' | 'Charon' | 'Kore' | 'Fenrir';
   language: 'English' | 'Spanish' | 'French' | 'German';
@@ -89,6 +90,23 @@ export interface AgentConfig {
   };
 }
 
+export interface ChatbotConfig {
+  id: string;
+  name: string;
+  voiceAgentId: string;
+  headerTitle: string;
+  welcomeMessage: string;
+  placeholder: string;
+  launcherLabel: string;
+  accentColor: string;
+  position: 'left' | 'right';
+  avatarLabel: string;
+  customPrompt: string;
+  suggestedPrompts: string[];
+  embedScript: string;
+  widgetScriptUrl: string;
+}
+
 export interface BusinessProfile {
   name: string;
   industry: string;
@@ -101,7 +119,11 @@ export interface BusinessProfile {
 export interface Organization {
   id: string;
   profile: BusinessProfile;
+  activeVoiceAgentId: string;
+  voiceAgents: AgentConfig[];
   agent: AgentConfig;
+  activeChatbotId: string;
+  chatbots: ChatbotConfig[];
   subscription: Subscription;
   phoneNumber: string;
   members: User[];

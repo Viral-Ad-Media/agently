@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
-import { AgentConfig, BusinessProfile, ChatMessage, Lead, Organization, User, WorkspaceBootstrap } from './types';
+import { AgentConfig, BusinessProfile, ChatMessage, ChatbotConfig, Lead, Organization, User, WorkspaceBootstrap } from './types';
 import { ICONS } from './constants';
 import { api } from './services/api';
 import { clearSessionToken, getSessionToken, setSessionToken } from './services/session';
@@ -88,9 +88,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, org, user, setShowSim
 
         <nav className="flex-1 space-y-2">
           <SidebarLink to="/dashboard" icon={ICONS.Dashboard} label="Dashboard" />
-          <SidebarLink to="/features" icon={ICONS.Sparkles} label="Capabilities" />
-          <SidebarLink to="/agent" icon={ICONS.Robot} label="AI Agent" />
-          <SidebarLink to="/messenger" icon={ICONS.MessageSquare} label="Messenger" />
+          <SidebarLink to="/agent" icon={ICONS.Robot} label="Voice Agent" />
+          <SidebarLink to="/messenger" icon={ICONS.MessageSquare} label="Chatbot Agent" />
           <SidebarLink to="/calls" icon={ICONS.Phone} label="Call Logs" />
           <SidebarLink to="/leads" icon={ICONS.Users} label="Lead CRM" />
           <SidebarLink to="/team" icon={ICONS.Shield} label="Team" />
@@ -343,6 +342,21 @@ const App: React.FC = () => {
     await refreshWorkspace();
   };
 
+  const handleCreateVoiceAgent = async () => {
+    await api.createVoiceAgent();
+    await refreshWorkspace();
+  };
+
+  const handleActivateVoiceAgent = async (voiceAgentId: string) => {
+    await api.activateVoiceAgent(voiceAgentId);
+    await refreshWorkspace();
+  };
+
+  const handleDeleteVoiceAgent = async (voiceAgentId: string) => {
+    await api.deleteVoiceAgent(voiceAgentId);
+    await refreshWorkspace();
+  };
+
   const handleUpdateRules = async (ruleUpdates: Partial<AgentConfig['rules']>) => {
     const { org: currentOrg } = requireWorkspace();
     await api.updateAgent({
@@ -375,14 +389,34 @@ const App: React.FC = () => {
     window.alert(response.message);
   };
 
-  const handleSendMessage = async (message: string): Promise<ChatMessage> => {
-    const response = await api.sendMessengerMessage(message);
+  const handleCreateChatbot = async () => {
+    await api.createChatbot();
+    await refreshWorkspace();
+  };
+
+  const handleUpdateChatbot = async (chatbotId: string, updates: Partial<ChatbotConfig>) => {
+    await api.updateChatbot(chatbotId, updates);
+    await refreshWorkspace();
+  };
+
+  const handleActivateChatbot = async (chatbotId: string) => {
+    await api.activateChatbot(chatbotId);
+    await refreshWorkspace();
+  };
+
+  const handleDeleteChatbot = async (chatbotId: string) => {
+    await api.deleteChatbot(chatbotId);
+    await refreshWorkspace();
+  };
+
+  const handleSendMessage = async (message: string, chatbotId?: string): Promise<ChatMessage> => {
+    const response = await api.sendMessengerMessage(message, chatbotId);
     setWorkspace((currentWorkspace) => currentWorkspace ? { ...currentWorkspace, conversation: response.conversation } : currentWorkspace);
     return response.assistantMessage;
   };
 
-  const handleResetConversation = async () => {
-    const response = await api.resetMessenger();
+  const handleResetConversation = async (chatbotId?: string) => {
+    const response = await api.resetMessenger(chatbotId);
     setWorkspace((currentWorkspace) => currentWorkspace ? { ...currentWorkspace, conversation: response.conversation } : currentWorkspace);
   };
 
@@ -520,6 +554,9 @@ const App: React.FC = () => {
                 <AgentSettings
                   org={org}
                   onUpdateAgent={handleUpdateAgent}
+                  onCreateVoiceAgent={handleCreateVoiceAgent}
+                  onActivateVoiceAgent={handleActivateVoiceAgent}
+                  onDeleteVoiceAgent={handleDeleteVoiceAgent}
                   onUpdateRules={handleUpdateRules}
                   onAddFaq={handleAddFaq}
                   onRemoveFaq={handleRemoveFaq}
@@ -534,10 +571,14 @@ const App: React.FC = () => {
             element={org ? (
               <ProtectedRoute>
                 <Messenger
-                  agent={org.agent}
+                  org={org}
                   messages={conversation}
                   onSendMessage={handleSendMessage}
                   onResetConversation={handleResetConversation}
+                  onCreateChatbot={handleCreateChatbot}
+                  onUpdateChatbot={handleUpdateChatbot}
+                  onActivateChatbot={handleActivateChatbot}
+                  onDeleteChatbot={handleDeleteChatbot}
                 />
               </ProtectedRoute>
             ) : <Navigate to="/login" />}

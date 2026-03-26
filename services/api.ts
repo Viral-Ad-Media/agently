@@ -2,6 +2,7 @@ import {
   AgentConfig,
   BusinessProfile,
   ChatMessage,
+  ChatbotConfig,
   DashboardData,
   FAQ,
   Lead,
@@ -191,6 +192,33 @@ export const api = {
     });
   },
 
+  async createVoiceAgent(payload: Partial<AgentConfig> = {}) {
+    return request<AgentConfig>('/api/voice-agents', {
+      method: 'POST',
+      body: payload,
+    });
+  },
+
+  async updateVoiceAgent(id: string, updates: Partial<AgentConfig>) {
+    return request<AgentConfig>(`/api/voice-agents/${id}`, {
+      method: 'PATCH',
+      body: updates,
+    });
+  },
+
+  async activateVoiceAgent(id: string) {
+    return request<AgentConfig>(`/api/voice-agents/${id}/activate`, {
+      method: 'POST',
+      body: {},
+    });
+  },
+
+  async deleteVoiceAgent(id: string) {
+    return request<{ success: boolean }>(`/api/voice-agents/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
   async createFaq(question: string, answer: string) {
     return request<FAQ>('/api/agent/faqs', {
       method: 'POST',
@@ -218,16 +246,48 @@ export const api = {
     });
   },
 
-  async sendMessengerMessage(message: string) {
-    return request<MessengerResponse>('/api/messenger/messages', {
+  async createChatbot(payload: Partial<ChatbotConfig> = {}) {
+    return request<ChatbotConfig>('/api/chatbots', {
       method: 'POST',
-      body: { message },
+      body: payload,
     });
   },
 
-  async resetMessenger() {
+  async updateChatbot(id: string, updates: Partial<ChatbotConfig>) {
+    return request<ChatbotConfig>(`/api/chatbots/${id}`, {
+      method: 'PATCH',
+      body: updates,
+    });
+  },
+
+  async activateChatbot(id: string) {
+    return request<ChatbotConfig>(`/api/chatbots/${id}/activate`, {
+      method: 'POST',
+      body: {},
+    });
+  },
+
+  async deleteChatbot(id: string) {
+    return request<{ success: boolean }>(`/api/chatbots/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  async getChatbotEmbed(id: string) {
+    return request<{ chatbot: ChatbotConfig; script: string }>(`/api/chatbots/${id}/embed`);
+  },
+
+  async sendMessengerMessage(message: string, chatbotId?: string) {
+    return request<MessengerResponse>('/api/messenger/messages', {
+      method: 'POST',
+      body: chatbotId ? { message, chatbotId } : { message },
+    });
+  },
+
+  async resetMessenger(chatbotId?: string) {
     return request<{ success: boolean; conversation: ChatMessage[] }>('/api/messenger/messages', {
       method: 'DELETE',
+      body: chatbotId ? { chatbotId } : {},
     });
   },
 
