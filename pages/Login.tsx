@@ -82,17 +82,55 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegister, onSendMagicLink, onV
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+    <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto grid min-h-[calc(100vh-3rem)] max-w-7xl overflow-hidden rounded-[2.75rem] border border-white/70 bg-white/72 shadow-[0_32px_100px_rgba(15,23,42,0.14)] backdrop-blur-xl lg:grid-cols-[0.95fr_1.05fr]">
+        <section className="relative hidden overflow-hidden bg-slate-950 p-10 text-white lg:flex lg:flex-col lg:justify-between">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,153,0,0.2),transparent_26%),radial-gradient(circle_at_bottom_right,rgba(20,184,166,0.16),transparent_26%)]" />
+          <div className="relative">
+            <p className="text-[10px] font-black uppercase tracking-[0.36em] text-white/45">Workspace Access</p>
+            <h1 className="font-display mt-6 text-5xl leading-[0.96]">Run voice agents, chatbots, and call ops from one place.</h1>
+            <p className="mt-6 max-w-xl text-base font-medium leading-relaxed text-white/68">
+              Agently gives every team a cleaner control surface for multi-agent voice, embeddable chatbot experiences, lead capture, and Twilio-backed call routing.
+            </p>
           </div>
-          <h1 className="text-3xl font-bold text-slate-900">Agently</h1>
-          <p className="text-slate-500 mt-2">Sign in to manage your AI receptionists</p>
-        </div>
 
-        <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 overflow-hidden relative">
+          <div className="relative space-y-4">
+            {[
+              {
+                label: 'Voice Agent Fleet',
+                copy: 'Manage inbound and outbound agents with their own numbers, direction, and training.',
+              },
+              {
+                label: 'Chatbot Studio',
+                copy: 'Style each chatbot, import website knowledge, and deploy with embeddable scripts.',
+              },
+              {
+                label: 'Operations Visibility',
+                copy: 'Track leads, transcripts, billing, and usage from the same workspace.',
+              },
+            ].map((item) => (
+              <div key={item.label} className="rounded-[1.9rem] border border-white/10 bg-white/5 p-5 backdrop-blur">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/45">{item.label}</p>
+                <p className="mt-3 text-sm font-medium leading-relaxed text-white/72">{item.copy}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="flex items-center justify-center p-6 sm:p-10 lg:p-12">
+          <div className="w-full max-w-md">
+            <div className="mb-8 text-center lg:text-left">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-[0_18px_40px_rgba(255,153,0,0.26)] lg:mx-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-[0.34em] text-indigo-500">Agently Access</p>
+              <h1 className="font-display mt-3 text-4xl text-slate-900">Welcome back</h1>
+              <p className="mt-3 text-sm font-medium leading-relaxed text-slate-500">
+                Sign in to manage your voice agents, chatbots, knowledge base, and live call operations.
+              </p>
+            </div>
+
+            <div className="overflow-hidden rounded-[2.2rem] border border-white/70 bg-white/88 p-8 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl">
           {sent ? (
             <div className="text-center py-8 animate-in fade-in zoom-in">
               <div className="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -267,15 +305,17 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegister, onSendMagicLink, onV
               </form>
             </>
           )}
-        </div>
-        
-        <p className="text-center mt-8 text-slate-400 text-sm">
-          {authMode === 'signup' ? (
-            <>Already have an account? <button onClick={() => setAuthMode('signin')} className="text-indigo-600 font-bold hover:underline">Sign in</button></>
-          ) : (
-            <>Don't have an account? <button onClick={() => setAuthMode('signup')} className="text-indigo-600 font-bold hover:underline">Create one</button></>
-          )}
-        </p>
+            </div>
+            
+            <p className="mt-8 text-center text-sm text-slate-400">
+              {authMode === 'signup' ? (
+                <>Already have an account? <button onClick={() => setAuthMode('signin')} className="text-indigo-600 font-bold hover:underline">Sign in</button></>
+              ) : (
+                <>Don&apos;t have an account? <button onClick={() => setAuthMode('signup')} className="text-indigo-600 font-bold hover:underline">Create one</button></>
+              )}
+            </p>
+          </div>
+        </section>
       </div>
     </div>
   );

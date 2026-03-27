@@ -1,102 +1,233 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ICONS } from '../constants';
 
+const SIGNALS = [
+  { label: 'Calls answered', value: '96%', detail: 'Average coverage after setup' },
+  { label: 'Lead capture lift', value: '2.3x', detail: 'Compared with voicemail-only workflows' },
+  { label: 'Setup time', value: '< 15m', detail: 'Website import and first agent live' },
+];
+
+const INDUSTRIES = ['Dental', 'Legal', 'Home Services', 'Real Estate', 'Clinics', 'Agencies'];
+
 const Home: React.FC = () => {
   return (
-    <div className="min-h-screen bg-white font-inter">
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none">
-          <div className="absolute top-20 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl animate-pulse [animation-delay:2s]"></div>
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
-            <span className="w-2 h-2 bg-indigo-600 rounded-full animate-ping"></span>
-            <span className="text-xs font-black text-indigo-600 uppercase tracking-widest">Now in Public Beta</span>
+    <div className="pb-16 pt-8 sm:pt-10">
+      <section className="px-4 sm:px-6">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div className="pt-12 lg:pt-20">
+            <div className="inline-flex items-center gap-3 rounded-full border border-amber-200 bg-white/80 px-4 py-2 shadow-sm backdrop-blur">
+              <span className="h-2.5 w-2.5 rounded-full bg-indigo-600 shadow-[0_0_0_6px_rgba(255,153,0,0.14)]" />
+              <span className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-600">Voice + Chat + CRM</span>
+            </div>
+
+            <h1 className="font-display mt-8 max-w-4xl text-5xl leading-[0.95] text-slate-900 sm:text-6xl lg:text-7xl">
+              Reception software that feels like an operating system, not a widget.
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-lg font-medium leading-relaxed text-slate-500 sm:text-xl">
+              Agently gives every business its own voice agents, website chatbots, lead capture, and call intelligence in one clean workspace.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link
+                to="/login"
+                className="rounded-full bg-slate-950 px-7 py-4 text-[11px] font-black uppercase tracking-[0.28em] text-white shadow-[0_20px_50px_rgba(15,23,42,0.18)] transition hover:bg-slate-800"
+              >
+                Start Free Trial
+              </Link>
+              <Link
+                to="/pricing"
+                className="rounded-full border border-slate-200 bg-white/85 px-7 py-4 text-[11px] font-black uppercase tracking-[0.28em] text-slate-700 shadow-sm transition hover:border-amber-200 hover:text-indigo-600"
+              >
+                Explore Pricing
+              </Link>
+            </div>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+              {SIGNALS.map((item) => (
+                <div key={item.label} className="rounded-[1.8rem] border border-white/70 bg-white/82 p-5 shadow-[0_22px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">{item.label}</p>
+                  <p className="mt-3 font-display text-3xl text-slate-900">{item.value}</p>
+                  <p className="mt-2 text-sm font-medium leading-relaxed text-slate-500">{item.detail}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          
-          <h1 className="text-6xl lg:text-8xl font-black text-slate-900 tracking-tight mb-8 leading-[0.9] animate-in fade-in slide-in-from-bottom-8 duration-700">
-            Your Business, <br />
-            <span className="text-indigo-600">Always Answered.</span>
-          </h1>
-          
-          <p className="max-w-2xl mx-auto text-xl text-slate-500 font-medium mb-12 leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-700">
-            Agently is the AI-powered receptionist that handles FAQs, captures leads, and books appointments 24/7. Never miss a customer again.
-          </p>
-          
-          <div className="flex flex-wrap justify-center gap-4 animate-in fade-in slide-in-from-bottom-16 duration-700">
-            <Link to="/login" className="px-10 py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-200 active:scale-95">
-              Start Free Trial
-            </Link>
-            <Link to="/pricing" className="px-10 py-5 bg-white text-slate-900 border-2 border-slate-100 rounded-2xl font-black uppercase tracking-widest text-xs hover:border-indigo-600 transition-all active:scale-95">
-              View Pricing
-            </Link>
+
+          <div className="relative lg:pt-12">
+            <div className="absolute inset-x-8 top-8 h-52 rounded-full bg-indigo-600/12 blur-3xl" />
+            <div className="relative space-y-5 rounded-[2.5rem] border border-white/70 bg-white/88 p-6 shadow-[0_28px_90px_rgba(15,23,42,0.14)] backdrop-blur-xl sm:p-8">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Live Control Room</p>
+                  <h2 className="font-display mt-2 text-2xl text-slate-900">Always-on coverage</h2>
+                </div>
+                <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] text-emerald-700">
+                  4 agents online
+                </span>
+              </div>
+
+              <div className="rounded-[2rem] bg-slate-950 p-5 text-white shadow-[0_24px_60px_rgba(15,23,42,0.2)]">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-white/45">Voice Agent</p>
+                    <p className="mt-2 text-xl font-black">BrightPath Front Desk</p>
+                    <p className="mt-2 text-sm font-medium text-white/65">Inbound line answering, lead qualification, and appointment routing.</p>
+                  </div>
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-white">
+                    <ICONS.Phone />
+                  </div>
+                </div>
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p className="text-[10px] font-black uppercase tracking-[0.24em] text-white/45">Today</p>
+                    <p className="mt-2 text-2xl font-black">84 calls</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p className="text-[10px] font-black uppercase tracking-[0.24em] text-white/45">Captured</p>
+                    <p className="mt-2 text-2xl font-black">27 leads</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-[1.8rem] border border-slate-200 bg-slate-50/80 p-5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+                      <ICONS.MessageSquare />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">Chatbot Agent</p>
+                      <p className="text-sm font-black text-slate-900">Embeddable on any site</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-sm font-medium leading-relaxed text-slate-500">
+                    Use different chatbots for the homepage, pricing, and support pages while sharing the right voice logic behind each one.
+                  </p>
+                </div>
+
+                <div className="rounded-[1.8rem] border border-slate-200 bg-slate-50/80 p-5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                      <ICONS.Users />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">Lead Workspace</p>
+                      <p className="text-sm font-black text-slate-900">Captured automatically</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-sm font-medium leading-relaxed text-slate-500">
+                    Every conversation turns into structured CRM data your team can review, update, and export without duct-taping tools together.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="py-20 border-y border-slate-100 bg-slate-50/50">
-        <div className="max-w-7xl mx-auto px-6">
-          <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-12">Trusted by 5,000+ Service Businesses</p>
-          <div className="flex flex-wrap justify-center items-center gap-12 lg:gap-24 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" className="h-8" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" className="h-8" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" className="h-8" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix" className="h-8" />
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Grid */}
-      <section className="py-32">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div className="p-10 rounded-[3rem] bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-2xl transition-all duration-500 group">
-              <div className="w-16 h-16 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                <ICONS.Robot />
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-4">AI Voice & Chat</h3>
-              <p className="text-slate-500 font-medium leading-relaxed">
-                Natural sounding AI that handles both phone calls and web chats with the same intelligence.
-              </p>
+      <section className="mt-20 px-4 sm:px-6">
+        <div className="mx-auto max-w-7xl rounded-[2.5rem] border border-white/70 bg-white/78 px-6 py-8 shadow-[0_24px_80px_rgba(15,23,42,0.09)] backdrop-blur-xl sm:px-8">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.34em] text-slate-400">Built for real operators</p>
+              <h2 className="font-display mt-2 text-2xl text-slate-900">Designed for teams that run on conversations</h2>
             </div>
-            <div className="p-10 rounded-[3rem] bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-2xl transition-all duration-500 group">
-              <div className="w-16 h-16 bg-emerald-500 text-white rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                <ICONS.Users />
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-4">Lead CRM</h3>
-              <p className="text-slate-500 font-medium leading-relaxed">
-                Automatically capture and organize every lead. Agently qualifies them before they reach your inbox.
-              </p>
-            </div>
-            <div className="p-10 rounded-[3rem] bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-2xl transition-all duration-500 group">
-              <div className="w-16 h-16 bg-amber-500 text-white rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                <ICONS.Dashboard />
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-4">Instant Setup</h3>
-              <p className="text-slate-500 font-medium leading-relaxed">
-                No coding required. Agently learns your business by scanning your website in seconds.
-              </p>
+            <div className="flex flex-wrap gap-3">
+              {INDUSTRIES.map((industry) => (
+                <span key={industry} className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] text-slate-600">
+                  {industry}
+                </span>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-32 bg-slate-900 overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-600 rounded-full blur-[120px] -mr-96 -mt-96"></div>
-        </div>
-        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-          <h2 className="text-5xl lg:text-7xl font-black text-white mb-8 tracking-tight">Ready to hire your <br />first AI employee?</h2>
-          <Link to="/login" className="inline-block px-12 py-6 bg-white text-slate-900 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-indigo-50 transition-all shadow-2xl active:scale-95">
-            Get Started Now
-          </Link>
+      <section className="mt-20 px-4 sm:px-6">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 max-w-2xl">
+            <p className="text-[10px] font-black uppercase tracking-[0.34em] text-indigo-500">Why teams switch</p>
+            <h2 className="font-display mt-3 text-4xl text-slate-900">A sharper UI for a sharper workflow</h2>
+            <p className="mt-4 text-base font-medium leading-relaxed text-slate-500">
+              One workspace to manage voice agents, chatbots, Twilio credentials, training data, and every captured conversation.
+            </p>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="rounded-[2.5rem] border border-white/70 bg-white/82 p-8 shadow-[0_24px_80px_rgba(15,23,42,0.1)] backdrop-blur-xl">
+              <div className="grid gap-5 md:grid-cols-2">
+                <div className="rounded-[1.8rem] border border-slate-200 bg-slate-50/80 p-6">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 text-white">
+                    <ICONS.Robot />
+                  </div>
+                  <h3 className="font-display mt-5 text-2xl text-slate-900">Multiple voice agents</h3>
+                  <p className="mt-3 text-sm font-medium leading-relaxed text-slate-500">
+                    Launch inbound and outbound voice agents with separate numbers, rules, knowledge, and call handling behavior.
+                  </p>
+                </div>
+
+                <div className="rounded-[1.8rem] border border-slate-200 bg-slate-50/80 p-6">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 text-white">
+                    <ICONS.MessageSquare />
+                  </div>
+                  <h3 className="font-display mt-5 text-2xl text-slate-900">Custom chatbots</h3>
+                  <p className="mt-3 text-sm font-medium leading-relaxed text-slate-500">
+                    Style, train, and embed separate chatbot agents for different campaigns, websites, and funnels.
+                  </p>
+                </div>
+
+                <div className="rounded-[1.8rem] border border-slate-200 bg-slate-50/80 p-6">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500 text-white">
+                    <ICONS.Dashboard />
+                  </div>
+                  <h3 className="font-display mt-5 text-2xl text-slate-900">Clean operational UI</h3>
+                  <p className="mt-3 text-sm font-medium leading-relaxed text-slate-500">
+                    Review performance, knowledge, billing, leads, and call logs without jumping across disconnected screens.
+                  </p>
+                </div>
+
+                <div className="rounded-[1.8rem] border border-slate-200 bg-slate-50/80 p-6">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-white">
+                    <ICONS.Sparkles />
+                  </div>
+                  <h3 className="font-display mt-5 text-2xl text-slate-900">Website-trained answers</h3>
+                  <p className="mt-3 text-sm font-medium leading-relaxed text-slate-500">
+                    Import public site content into your knowledge base, then refine entries directly from the dashboard.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[2.5rem] bg-slate-950 p-8 text-white shadow-[0_28px_90px_rgba(15,23,42,0.24)]">
+              <p className="text-[10px] font-black uppercase tracking-[0.34em] text-white/45">Deployment Flow</p>
+              <h3 className="font-display mt-3 text-3xl">From website to live receptionist in one session.</h3>
+
+              <div className="mt-8 space-y-4">
+                {[
+                  'Import your public website and generate the first knowledge base.',
+                  'Create one or more voice agents with their own Twilio lines.',
+                  'Customize chatbots, copy the embed script, and deploy anywhere.',
+                  'Review leads, transcripts, and conversion activity from the same workspace.',
+                ].map((step, index) => (
+                  <div key={step} className="flex gap-4 rounded-[1.8rem] border border-white/10 bg-white/5 p-4">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/10 font-display text-lg">
+                      {index + 1}
+                    </div>
+                    <p className="text-sm font-medium leading-relaxed text-white/72">{step}</p>
+                  </div>
+                ))}
+              </div>
+
+              <Link
+                to="/login"
+                className="mt-8 inline-flex rounded-full bg-white px-6 py-4 text-[11px] font-black uppercase tracking-[0.28em] text-slate-900 transition hover:bg-amber-50"
+              >
+                Build Your Workspace
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>
