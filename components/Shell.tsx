@@ -7,7 +7,6 @@ type SidebarIcon = React.ComponentType<Record<string, never>>;
 
 const NAV_ITEMS: Array<{ to: string; icon: SidebarIcon; label: string; description: string }> = [
   { to: '/dashboard', icon: ICONS.Dashboard, label: 'Dashboard', description: 'Live performance and workload' },
-  { to: '/features', icon: ICONS.Sparkles, label: 'Platform Features', description: 'Browse the full product surface' },
   { to: '/agent', icon: ICONS.Robot, label: 'Voice Agent', description: 'Configure lines, scripts, and knowledge' },
   { to: '/messenger', icon: ICONS.MessageSquare, label: 'Chatbot Agent', description: 'Widget design and chatbot knowledge' },
   { to: '/calls', icon: ICONS.Phone, label: 'Call Logs', description: 'Transcripts, outcomes, and reports' },
@@ -15,6 +14,13 @@ const NAV_ITEMS: Array<{ to: string; icon: SidebarIcon; label: string; descripti
   { to: '/team', icon: ICONS.Shield, label: 'Team', description: 'Members, permissions, and invites' },
   { to: '/billing', icon: ICONS.CreditCard, label: 'Billing', description: 'Plan usage, invoices, and upgrades' },
   { to: '/settings', icon: ICONS.Settings, label: 'Settings', description: 'Workspace, phone, and Twilio setup' },
+  { to: '/features', icon: ICONS.Sparkles, label: 'Platform Features', description: 'Browse the full product surface' },
+];
+
+const QUICK_SETUP_ITEMS: Array<{ to: string; label: string }> = [
+  { to: '/agent', label: 'Voice Setup' },
+  { to: '/messenger', label: 'Chatbot Setup' },
+  { to: '/settings', label: 'Settings' },
 ];
 
 const PUBLIC_NAV_ITEMS = [
@@ -134,8 +140,9 @@ const SidebarLink: React.FC<{ to: string; icon: SidebarIcon; label: string; desc
   return (
     <Link
       to={to}
+      title={description}
       onClick={onNavigate}
-      className={`group flex items-center gap-3 rounded-[1.4rem] border px-4 py-3 transition-all duration-200 ${
+      className={`group flex items-center gap-3 rounded-[1.25rem] border px-3.5 py-3 transition-all duration-200 ${
         isActive
           ? 'border-amber-200 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-[0_18px_40px_rgba(255,153,0,0.26)]'
           : 'border-transparent bg-transparent text-slate-500 hover:border-white/70 hover:bg-white/70 hover:text-slate-900'
@@ -148,9 +155,6 @@ const SidebarLink: React.FC<{ to: string; icon: SidebarIcon; label: string; desc
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-black tracking-tight">{label}</p>
-        <p className={`mt-0.5 truncate text-[11px] font-medium ${isActive ? 'text-white/80' : 'text-slate-400 group-hover:text-slate-500'}`}>
-          {description}
-        </p>
       </div>
       <div className={`h-2.5 w-2.5 rounded-full ${isActive ? 'bg-white' : 'bg-slate-200 group-hover:bg-indigo-300'}`} />
     </Link>
@@ -184,14 +188,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, org, user, setShowSim
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,153,0,0.12),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(15,118,110,0.12),transparent_26%)]" />
       <div className="relative flex min-h-screen">
         <div
-          className={`fixed inset-0 z-30 bg-slate-950/45 backdrop-blur-sm transition-opacity duration-200 lg:hidden ${
+          className={`fixed inset-0 z-30 bg-slate-950/45 backdrop-blur-sm transition-opacity duration-200 md:hidden ${
             mobileNavOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
           }`}
           onClick={() => setMobileNavOpen(false)}
         />
 
         <aside
-          className={`fixed inset-y-0 left-0 z-40 w-[18.75rem] transform transition-transform duration-300 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
+          className={`fixed inset-y-0 left-0 z-40 w-[18.75rem] transform transition-transform duration-300 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
             mobileNavOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
@@ -209,33 +213,56 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, org, user, setShowSim
               <button
                 type="button"
                 onClick={() => setMobileNavOpen(false)}
-                className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 text-slate-500 lg:hidden"
+                className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 text-slate-500 md:hidden"
                 aria-label="Close navigation"
               >
                 <MenuButtonIcon open />
               </button>
             </div>
 
-            <div className="mt-6 rounded-[1.75rem] border border-amber-100 bg-[linear-gradient(135deg,rgba(255,153,0,0.12),rgba(255,255,255,0.95))] p-5">
+            <div className="mt-5 rounded-[1.6rem] border border-amber-100 bg-[linear-gradient(135deg,rgba(255,153,0,0.12),rgba(255,255,255,0.95))] p-4">
               <p className="text-[10px] font-black uppercase tracking-[0.32em] text-slate-500">Workspace</p>
-              <h2 className="font-display mt-2 text-xl text-slate-900">{org.profile.name}</h2>
-              <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
+              <h2 className="font-display mt-2 text-lg text-slate-900">{org.profile.name}</h2>
+              <p className="mt-1.5 text-sm font-medium leading-relaxed text-slate-600">
                 {activeVoiceAgent.direction === 'outbound' ? 'Outbound' : 'Inbound'} voice agent live with {activeChatbot?.name || 'your chatbot'} linked.
               </p>
             </div>
 
-            <nav className="mt-6 flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-1">
+            <div className="mt-4">
+              <p className="px-1 text-[10px] font-black uppercase tracking-[0.28em] text-slate-400">Quick Setup</p>
+              <div className="mt-3 grid grid-cols-1 gap-2">
+                {QUICK_SETUP_ITEMS.map((item) => {
+                  const isQuickActive = location.pathname === item.to;
+                  return (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      onClick={() => setMobileNavOpen(false)}
+                      className={`rounded-[1.1rem] border px-3 py-2.5 text-[11px] font-black uppercase tracking-[0.2em] transition ${
+                        isQuickActive
+                          ? 'border-amber-200 bg-amber-50 text-indigo-700'
+                          : 'border-slate-200 bg-white/80 text-slate-600 hover:border-indigo-200 hover:text-indigo-600'
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            <nav className="mt-4 flex-1 space-y-1.5 overflow-y-auto custom-scrollbar pr-1">
               {NAV_ITEMS.map((item) => (
                 <SidebarLink key={item.to} {...item} onNavigate={() => setMobileNavOpen(false)} />
               ))}
             </nav>
 
-            <div className="mt-6 space-y-4 border-t border-slate-100 pt-5">
-              <div className="rounded-[1.75rem] border border-slate-200 bg-slate-950 p-4 text-white shadow-[0_18px_50px_rgba(15,23,42,0.18)]">
+            <div className="mt-5 space-y-3 border-t border-slate-100 pt-4">
+              <div className="rounded-[1.5rem] border border-slate-200 bg-slate-950 p-4 text-white shadow-[0_18px_50px_rgba(15,23,42,0.18)]">
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.32em] text-white/55">Plan Usage</p>
-                    <p className="mt-2 text-lg font-black tracking-tight">{remainingMinutes} minutes left</p>
+                    <p className="mt-1.5 text-base font-black tracking-tight">{remainingMinutes} minutes left</p>
                   </div>
                   <Link to="/billing" className="rounded-full border border-white/15 px-3 py-1 text-[10px] font-black uppercase tracking-[0.25em] text-white/75 transition hover:border-white/30 hover:text-white">
                     {org.subscription.plan}
@@ -251,14 +278,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, org, user, setShowSim
 
               <button
                 onClick={() => setShowSimulator(true)}
-                className="w-full rounded-[1.5rem] bg-indigo-600 px-5 py-4 text-[11px] font-black uppercase tracking-[0.28em] text-white shadow-[0_18px_40px_rgba(255,153,0,0.24)] transition hover:bg-indigo-700"
+                className="w-full rounded-[1.35rem] bg-indigo-600 px-5 py-3.5 text-[11px] font-black uppercase tracking-[0.28em] text-white shadow-[0_18px_40px_rgba(255,153,0,0.24)] transition hover:bg-indigo-700"
               >
                 Launch Simulator
               </button>
 
               <button
                 onClick={onLogout}
-                className="flex w-full items-center justify-center gap-2 rounded-[1.4rem] border border-slate-200 px-4 py-3 text-[11px] font-black uppercase tracking-[0.24em] text-slate-500 transition hover:border-red-200 hover:text-red-600"
+                className="flex w-full items-center justify-center gap-2 rounded-[1.3rem] border border-slate-200 px-4 py-3 text-[11px] font-black uppercase tracking-[0.24em] text-slate-500 transition hover:border-red-200 hover:text-red-600"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -271,7 +298,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, org, user, setShowSim
           </div>
         </aside>
 
-        <div className="flex-1 lg:min-w-0">
+        <div className="flex-1 md:min-w-0">
           <div className="px-4 pb-10 pt-4 sm:px-6 lg:px-8">
             <header className="sticky top-4 z-20">
               <div className="rounded-[2rem] border border-white/70 bg-white/82 p-5 shadow-[0_28px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl sm:p-6">
@@ -280,7 +307,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, org, user, setShowSim
                     <button
                       type="button"
                       onClick={() => setMobileNavOpen(true)}
-                      className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm lg:hidden"
+                      className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm md:hidden"
                       aria-label="Open navigation"
                     >
                       <MenuButtonIcon />
