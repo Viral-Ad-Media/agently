@@ -17,12 +17,6 @@ const NAV_ITEMS: Array<{ to: string; icon: SidebarIcon; label: string; descripti
   { to: '/features', icon: ICONS.Sparkles, label: 'Platform Features', description: 'Browse the full product surface' },
 ];
 
-const QUICK_SETUP_ITEMS: Array<{ to: string; label: string }> = [
-  { to: '/agent', label: 'Voice Setup' },
-  { to: '/messenger', label: 'Chatbot Setup' },
-  { to: '/settings', label: 'Settings' },
-];
-
 const PUBLIC_NAV_ITEMS = [
   { to: '/features', label: 'Features' },
   { to: '/pricing', label: 'Pricing' },
@@ -179,9 +173,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, org, user, setShowSim
 
   const usagePercent = getUsagePercent(org.subscription.usage.minutes, org.subscription.usage.minuteLimit);
   const activeVoiceAgent = org.voiceAgents.find((agent) => agent.id === org.activeVoiceAgentId) || org.agent;
-  const activeChatbot = org.chatbots.find((chatbot) => chatbot.id === org.activeChatbotId) || org.chatbots[0];
   const pageMeta = getPageMeta(location.pathname, org);
-  const remainingMinutes = Math.max(0, org.subscription.usage.minuteLimit - org.subscription.usage.minutes);
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
@@ -220,60 +212,26 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, org, user, setShowSim
               </button>
             </div>
 
-            <div className="mt-5 rounded-[1.6rem] border border-amber-100 bg-[linear-gradient(135deg,rgba(255,153,0,0.12),rgba(255,255,255,0.95))] p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.32em] text-slate-500">Workspace</p>
-              <h2 className="font-display mt-2 text-lg text-slate-900">{org.profile.name}</h2>
-              <p className="mt-1.5 text-sm font-medium leading-relaxed text-slate-600">
-                {activeVoiceAgent.direction === 'outbound' ? 'Outbound' : 'Inbound'} voice agent live with {activeChatbot?.name || 'your chatbot'} linked.
-              </p>
-            </div>
-
-            <div className="mt-4">
-              <p className="px-1 text-[10px] font-black uppercase tracking-[0.28em] text-slate-400">Quick Setup</p>
-              <div className="mt-3 grid grid-cols-1 gap-2">
-                {QUICK_SETUP_ITEMS.map((item) => {
-                  const isQuickActive = location.pathname === item.to;
-                  return (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      onClick={() => setMobileNavOpen(false)}
-                      className={`rounded-[1.1rem] border px-3 py-2.5 text-[11px] font-black uppercase tracking-[0.2em] transition ${
-                        isQuickActive
-                          ? 'border-amber-200 bg-amber-50 text-indigo-700'
-                          : 'border-slate-200 bg-white/80 text-slate-600 hover:border-indigo-200 hover:text-indigo-600'
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-
-            <nav className="mt-4 flex-1 space-y-1.5 overflow-y-auto custom-scrollbar pr-1">
+            <nav className="mt-5 flex-1 space-y-1.5 overflow-y-auto custom-scrollbar pr-1">
               {NAV_ITEMS.map((item) => (
                 <SidebarLink key={item.to} {...item} onNavigate={() => setMobileNavOpen(false)} />
               ))}
             </nav>
 
             <div className="mt-5 space-y-3 border-t border-slate-100 pt-4">
-              <div className="rounded-[1.5rem] border border-slate-200 bg-slate-950 p-4 text-white shadow-[0_18px_50px_rgba(15,23,42,0.18)]">
+              <div className="rounded-[1.25rem] border border-slate-200 bg-slate-50/85 p-3">
                 <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.32em] text-white/55">Plan Usage</p>
-                    <p className="mt-1.5 text-base font-black tracking-tight">{remainingMinutes} minutes left</p>
-                  </div>
-                  <Link to="/billing" className="rounded-full border border-white/15 px-3 py-1 text-[10px] font-black uppercase tracking-[0.25em] text-white/75 transition hover:border-white/30 hover:text-white">
+                  <p className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-400">Plan Usage</p>
+                  <Link to="/billing" className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 transition hover:border-indigo-200 hover:text-indigo-600">
                     {org.subscription.plan}
                   </Link>
                 </div>
-                <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
-                  <div className="h-full rounded-full bg-gradient-to-r from-indigo-400 via-amber-300 to-emerald-300" style={{ width: `${usagePercent}%` }} />
-                </div>
-                <p className="mt-3 text-xs font-medium text-white/65">
-                  {org.subscription.usage.minutes} / {org.subscription.usage.minuteLimit} minutes used this cycle.
+                <p className="mt-2 text-xs font-semibold text-slate-600">
+                  {org.subscription.usage.minutes} / {org.subscription.usage.minuteLimit} minutes used
                 </p>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200">
+                  <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-amber-400 to-emerald-400" style={{ width: `${usagePercent}%` }} />
+                </div>
               </div>
 
               <button
@@ -301,59 +259,56 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, org, user, setShowSim
         <div className="flex-1 md:min-w-0">
           <div className="px-4 pb-10 pt-4 sm:px-6 lg:px-8">
             <header className="sticky top-4 z-20">
-              <div className="rounded-[2rem] border border-white/70 bg-white/82 p-5 shadow-[0_28px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl sm:p-6">
-                <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-                  <div className="flex items-start gap-3 sm:gap-4">
+              <div className="rounded-[1.6rem] border border-white/70 bg-white/84 px-4 py-4 shadow-[0_20px_60px_rgba(15,23,42,0.1)] backdrop-blur-xl sm:px-5">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="flex items-center gap-3">
                     <button
                       type="button"
                       onClick={() => setMobileNavOpen(true)}
-                      className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm md:hidden"
+                      className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm md:hidden"
                       aria-label="Open navigation"
                     >
                       <MenuButtonIcon />
                     </button>
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.34em] text-indigo-500">{pageMeta.eyebrow}</p>
-                      <h1 className="font-display mt-2 text-3xl tracking-tight text-slate-900 sm:text-4xl">{pageMeta.title}</h1>
-                      <p className="mt-2 max-w-2xl text-sm font-medium leading-relaxed text-slate-500 sm:text-base">
-                        {pageMeta.description}
-                      </p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.28em] text-indigo-600">
+                          {pageMeta.eyebrow}
+                        </span>
+                        <span className="hidden text-xs font-semibold text-slate-400 sm:inline">
+                          {org.profile.name}
+                        </span>
+                      </div>
+                      <h1 className="font-display mt-2 text-2xl tracking-tight text-slate-900 sm:text-[2rem]">
+                        {pageMeta.title}
+                      </h1>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-                      <p className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-400">Active Voice Agent</p>
-                      <p className="mt-1 text-sm font-black text-slate-900">{activeVoiceAgent.name}</p>
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <div className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600">
+                      <span className="font-black text-slate-900">{activeVoiceAgent.name}</span>
+                      <span className="ml-1.5 text-slate-400">active</span>
                     </div>
-                    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-                      <p className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-400">Chat Experience</p>
-                      <p className="mt-1 text-sm font-black text-slate-900">{activeChatbot?.name || 'Not set'}</p>
+                    <div className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600">
+                      <span className="font-black text-slate-900">{org.subscription.usage.calls}</span>
+                      <span className="ml-1.5 text-slate-400">calls this cycle</span>
                     </div>
-                    <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-950 px-4 py-3 text-white shadow-[0_18px_40px_rgba(15,23,42,0.18)]">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/12 font-display text-base">
+                    <Link
+                      to="/billing"
+                      className="rounded-full border border-slate-200 bg-white px-3 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-slate-600 transition hover:border-indigo-200 hover:text-indigo-600"
+                    >
+                      {org.subscription.plan}
+                    </Link>
+                    <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-950 py-1.5 pl-1.5 pr-3 text-white shadow-[0_14px_32px_rgba(15,23,42,0.14)]">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/12 font-display text-sm">
                         {user.name.charAt(0) || 'A'}
                       </div>
-                      <div>
-                        <p className="text-sm font-black">{user.name}</p>
-                        <p className="text-[10px] font-black uppercase tracking-[0.28em] text-white/55">{user.role}</p>
+                      <div className="leading-tight">
+                        <p className="text-xs font-black">{user.name}</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/55">{user.role}</p>
                       </div>
                     </div>
-                  </div>
-                </div>
-
-                <div className="mt-5 grid gap-3 xl:grid-cols-3">
-                  <div className="rounded-[1.4rem] border border-slate-200 bg-slate-50/80 px-4 py-3">
-                    <p className="text-[10px] font-black uppercase tracking-[0.26em] text-slate-400">Workspace</p>
-                    <p className="mt-1 text-sm font-black text-slate-900">{org.profile.name}</p>
-                  </div>
-                  <div className="rounded-[1.4rem] border border-slate-200 bg-slate-50/80 px-4 py-3">
-                    <p className="text-[10px] font-black uppercase tracking-[0.26em] text-slate-400">Primary Line</p>
-                    <p className="mt-1 text-sm font-black text-slate-900">{activeVoiceAgent.twilioPhoneNumber || org.settings.phoneNumber || 'Not assigned yet'}</p>
-                  </div>
-                  <div className="rounded-[1.4rem] border border-slate-200 bg-slate-50/80 px-4 py-3">
-                    <p className="text-[10px] font-black uppercase tracking-[0.26em] text-slate-400">Usage Snapshot</p>
-                    <p className="mt-1 text-sm font-black text-slate-900">{org.subscription.usage.calls} calls this cycle</p>
                   </div>
                 </div>
               </div>
